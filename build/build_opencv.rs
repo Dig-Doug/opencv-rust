@@ -38,7 +38,6 @@ pub fn build_from_source() -> Result<Library> {
 		&format!("opencv-{}", version),
 	)?;
 
-	// Download contrib repository if requested
 	let contrib_dir = if with_contrib {
 		Some(download_and_extract_tar(
 			&format!("https://github.com/opencv/opencv_contrib/archive/{}.tar.gz", version),
@@ -49,20 +48,10 @@ pub fn build_from_source() -> Result<Library> {
 		None
 	};
 
-	// Build OpenCV
 	build_opencv(&source_dir, &build_dir, &install_dir, contrib_dir.as_deref())?;
 
-	// Get paths for the built libraries
 	let include_path = install_dir.join("include").join("opencv4");
-
-	// Determine library path based on platform
-	let lib_path = if cfg!(target_os = "macos") {
-		install_dir.join("lib")
-	} else {
-		// Linux and others
-		install_dir.join("lib")
-	};
-
+	let lib_path = install_dir.join("lib");
 	let link_libs = {
 		let pattern = if cfg!(target_os = "macos") {
 			lib_path.join("libopencv_*.dylib").to_string_lossy().to_string()
