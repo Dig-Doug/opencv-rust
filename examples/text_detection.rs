@@ -62,6 +62,8 @@ pub fn main() -> Result<()> {
 
 	// Load networks.
 	let mut detector = TextDetectionModel_EAST::from_file(&det_model_path, "")?;
+	detector.set_preferable_backend(dnn::Backend::DNN_BACKEND_DEFAULT)?;
+	detector.set_preferable_target(dnn::Target::DNN_TARGET_CPU)?;
 	detector
 		.set_confidence_threshold(conf_threshold)?
 		.set_nms_threshold(nms_threshold)?;
