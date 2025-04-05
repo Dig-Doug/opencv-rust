@@ -24,6 +24,8 @@ mod generator;
 mod header;
 #[path = "build/library.rs"]
 pub mod library;
+#[path = "build/build_opencv.rs"]
+mod build_opencv;
 
 type Result<T, E = Box<dyn std::error::Error>> = std::result::Result<T, E>;
 
@@ -349,7 +351,16 @@ fn main() -> Result<()> {
 		}
 	}
 
-	let opencv = Library::probe()?;
+	// Check if we should build OpenCV from source based on feature flag
+	let build_from_source = env::var("CARGO_FEATURE_BUILD_FROM_SOURCE").is_ok();
+	
+	let opencv = if build_from_source {
+		eprintln!("=== Building OpenCV from source");
+		build_opencv::build_from_source()?
+	} else {
+		Library::probe()?
+	};
+	
 	eprintln!("=== OpenCV library configuration: {opencv:#?}");
 	if OPENCV_BRANCH_5.matches(&opencv.version) {
 		println!("cargo::rustc-cfg=ocvrs_opencv_branch_5");

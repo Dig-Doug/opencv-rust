@@ -104,6 +104,49 @@ requires some additional configuration.
 You need to set up the following environment variables to point to the installed files of your OpenCV build:
 `OPENCV_LINK_LIBS`, `OPENCV_LINK_PATHS` and `OPENCV_INCLUDE_PATHS` (see [the Environment Variables section of README.md](https://github.com/twistedfall/opencv-rust/tree/v0.94.3?tab=readme-ov-file#environment-variables) for details).
 
+### Automatic source build
+
+As of version 0.94.5, the crate supports building OpenCV from source automatically during the build process. 
+This eliminates the need to install OpenCV separately on your system.
+
+#### Using Cargo features
+
+Add the `build-from-source` feature to your Cargo.toml:
+
+```toml
+[dependencies]
+opencv = { version = "0.94.5", features = ["build-from-source"] }
+```
+
+To also include the contrib modules, add the `contrib` feature:
+
+```toml
+[dependencies]
+opencv = { version = "0.94.5", features = ["build-from-source", "contrib"] }
+```
+
+By default, it will build OpenCV 4.9.0. You can specify a different version using the `OPENCV_SOURCE_VERSION` environment variable:
+
+```bash
+export OPENCV_SOURCE_VERSION=5.0.0-alpha
+cargo build
+```
+
+> **Note:** The build-from-source feature currently only supports Linux and macOS platforms.
+
+You can customize the CMake build options with the `OPENCV_CMAKE_OPTIONS` environment variable:
+
+```bash
+export OPENCV_CMAKE_OPTIONS="-DWITH_CUDA=ON;-DCUDA_ARCH_BIN=7.5;-DBUILD_opencv_dnn=OFF"
+cargo build
+```
+
+This feature requires:
+1. CMake to be installed on your system
+2. A C++ compiler (GCC or Clang)
+
+Note that the first build will take some time as it downloads and compiles the entire OpenCV library.
+
 ### Static build
 
 Static linking to OpenCV is supported and tested at least on Linux. For some hints on building OpenCV statically

@@ -67,6 +67,14 @@ on any platform, the specified values will override those automatically discover
   The path list can start with '+', see `OPENCV_LINK_LIBS` for a detailed explanation (e.g.
   "+/opt/cuda/targets/x86_64-linux/include/").
 
+* `OPENCV_SOURCE_VERSION`
+  When building from source with the `build-from-source` feature, specifies which version of OpenCV to build. 
+  Defaults to "4.9.0" if not set.
+
+* `OPENCV_CMAKE_OPTIONS`
+  Additional CMake options to pass when building OpenCV from source with the `build-from-source` feature, 
+  separated by semicolons. E.g. "-DWITH_CUDA=ON;-DCUDA_ARCH_BIN=7.5".
+
 The following variables are rarely used, but you might need them under some circumstances:
 
 * `OPENCV_PACKAGE_NAME`
@@ -146,6 +154,8 @@ The following variables affect the building the of the `opencv` crate, but belon
   workaround for when your dependencies (like `bindgen`) pull in `clang-sys` with hard `runtime` feature.
 * `rgb` - allow using [`rgb`](https://crates.io/crates/rgb) crate types as `Mat` elements
 * `f16` - add intergration with `f16` type from the `half` crate
+* `build-from-source` - build OpenCV from source during build instead of using a system-installed version
+* `contrib` - include OpenCV contrib modules when building from source (implies `build-from-source`)
 
 ## API details
 
